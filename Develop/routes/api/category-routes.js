@@ -16,7 +16,6 @@ router.get('/', async (req, res) => {
     res.status(500).json(err)
   }
 });
-
 router.get('/:id', async (req, res) => {
   // find one category by its `id` value
   // be sure to include its associated Products
@@ -33,8 +32,6 @@ router.get('/:id', async (req, res) => {
     res.status(500).json(err)
   }
 });
-
-
 router.post('/', async (req, res) => {
   // create a new category
   try{
@@ -45,13 +42,35 @@ router.post('/', async (req, res) => {
     res.status(400).json(err)
   }
 });
-
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a category by its `id` value
+  try{
+    const categoryInfo = await Category.update(req.body, {
+      where: {id: req.params.id}
+    })
+    if (!categoryInfo) {
+      res.status(404).json({message: "no such category"})
+      return
+    }
+  }
+  catch (err) {
+    res.status(500).json(err)
+  }
 });
-
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete a category by its `id` value
+  try{
+    const categoryInfo = await Category.destroy({
+      where: {id: req.params.id}
+    })
+    if (!categoryInfo) {
+      res.status(404).json({message: "no such category"})
+      return
+    }
+  }
+  catch (err) {
+    res.status(500).json(error)
+  }
 });
 
 module.exports = router;
